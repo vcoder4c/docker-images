@@ -1,9 +1,16 @@
-name: Dockerize Python3.6
+name: Dockerize
 
 on:
-  push:
-    branches:
-      - 'main'
+  workflow_dispatch:
+    inputs:
+      image:
+        description: 'Your expected image'
+        required: true
+        default: 'python3.6'
+      tags:
+        description: "Your expected image's tag"
+        required: true
+        default: "v1.0"
 
 jobs:
   dockerize:
@@ -24,6 +31,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: python3.6
+          context: ${{ github.event.inputs.image }}
           push: true
-          tags: vcoder/python3.6:v1.0
+          tags: vcoder/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }}
