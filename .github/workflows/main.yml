@@ -33,4 +33,4 @@ jobs:
         with:
           context: ${{ github.event.inputs.image }}
           push: true
-          tags: vcoder/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }}
+          tags: vcoder/${{ github.event.inputs.image }}:${{ github.event.inputs.tags }}
