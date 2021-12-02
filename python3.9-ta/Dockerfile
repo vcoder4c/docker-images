@@ -4,7 +4,7 @@ FROM python:3.9.9-slim
 COPY ta-lib-0.4.0-src.tar.gz /tmp/ta-lib-0.4.0-src.tar.gz
 
 RUN apt update \
-    && apt install -y gcc python3-dev default-libmysqlclient-dev build-essential make \
+    && apt install -y gcc python3-dev default-libmysqlclient-dev build-essential make cron \
     && cd /tmp && tar -xvzf ta-lib-0.4.0-src.tar.gz && cd ta-lib/ \
     && ./configure --prefix=/usr && make && make install \
     && pip install --no-cache-dir uwsgi \
