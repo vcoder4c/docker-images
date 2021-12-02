@@ -3,6 +3,7 @@ FROM python:3.6-alpine
 RUN apk add --no-cache --virtual .build-deps pcre-dev \
     mariadb-dev gcc libc-dev musl-dev python3-dev \
     libffi-dev openssl-dev cargo build-base linux-headers \
+    busybox-initscripts \
     && apk add --no-cache mariadb-connector-c pcre \
     && pip install --no-cache-dir uwsgi \
     && pip install --no-cache-dir dumb-init \
