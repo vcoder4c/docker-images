@@ -1,7 +1,7 @@
 FROM python:3.9.9-slim
 
 RUN apt update && apt install -y gcc \
-    && apt install -y default-libmysqlclient-dev cron \
+    && apt install -y default-libmysqlclient-dev cron gettext \
     && pip install --no-cache-dir uwsgi \
     && pip install --no-cache-dir dumb-init \
     && pip install --no-cache-dir cryptography==3.4.8 \
