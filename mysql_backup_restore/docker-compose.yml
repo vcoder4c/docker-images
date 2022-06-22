@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  backup-service:
+    image: vcoder/mysql_backup_restore
+    restart: always
+    env_file:
+      - backup.env
