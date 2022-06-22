@@ -1,6 +1,5 @@
 #!/usr/local/bin/dumb-init /bin/bash
 set -e
-printenv
 
 if [ $1 = "backup" ]; then
   crontab -l | { cat; echo "$CRON_PATTERN sh /root/backup.sh"; } |  crontab -
