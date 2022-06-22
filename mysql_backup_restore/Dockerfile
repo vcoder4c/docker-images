@@ -1,7 +1,7 @@
 FROM python:3.9-alpine
 
 RUN apk add --no-cache --virtual .build-deps musl-dev gcc \
-    && apk add --no-cache bash mysql-client \
+    && apk add --no-cache bash tzdata mysql-client \
     && pip install --no-cache-dir awscli \
     && pip install --no-cache-dir dumb-init \
     && apk del --no-cache .build-deps
@@ -22,6 +22,7 @@ ENV S3_S3V4 no
 ENV S3_PREFIX 'backup'
 
 ENV CRON_PATTERN '* * * * *'
+ENV TIMEZONE 'Asia/Ho_Chi_Minh'
 
 ADD backup.sh /root/backup.sh
 ADD restore.sh /root/restore.sh
