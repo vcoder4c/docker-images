@@ -7,10 +7,6 @@ on:
         description: 'Your expected image'
         required: true
         default: 'python3.6'
-      tags:
-        description: "Your expected image's tag"
-        required: true
-        default: "v1.0"
 
 jobs:
   dockerize:
