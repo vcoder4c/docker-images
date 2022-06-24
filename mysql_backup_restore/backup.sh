@@ -55,20 +55,28 @@ if [ "${S3_S3V4}" = "yes" ]; then
 fi
 
 MYSQL_HOSTOPTS="-h $MYSQL_HOST -P $MYSQL_PORT -u$MYSQL_USER -p$MYSQL_PASSWORD"
-DUMPTIME=$(date +"%Y-%m-%dT%H%M%SZ")
-echo "Creating dump for ${MYSQL_DB} from ${MYSQL_HOST}..."
 
-DUMP_FILE="/tmp/dump_${MYSQL_DB}.sql.gz"
-#run mysql dump
-mysqldump $MYSQL_HOSTOPTS $MYSQLDUMP_OPTIONS $MYSQL_DB | gzip > $DUMP_FILE
-
-# upload to s3
-S3_FILE="${DUMPTIME}.${MYSQL_DB}.sql.gz"
-S3_URI=s3://$S3_BUCKET/$S3_PREFIX/$S3_FILE
-echo "Uploading ${S3_FILE} on S3..."
-cat $DUMP_FILE | aws $AWS_ARGS s3 cp - $S3_URI
-if [ $? != 0 ]; then
-  >&2 echo "Error uploading ${S3_FILE} on S3"
+if [ "${MYSQL_DB}" = "--all-databases" ]; then
+  databases=( $(mysql $MYSQL_HOSTOPTS -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema|mysql|sys|innodb)"))
+else
+  IFS=',' read -r -a databases <<< $MYSQL_DB
 fi
-rm $DUMP_FILE
+
+DUMPTIME=$(date +"%Y-%m-%dT%H%M%SZ")
+echo "MySQL backup starting for ${databases[@]} at ${DUMPTIME}"
+for DB in "${databases[@]}";
+do
+  echo "Creating dump for ${DB} from ${MYSQL_HOST}..."
+  DUMP_FILE="/tmp/dump_${DB}.sql.gz"
+  mysqldump $MYSQL_HOSTOPTS $MYSQLDUMP_OPTIONS $DB | gzip > $DUMP_FILE
+  # upload to s3
+  S3_FILE="${DUMPTIME}.${DB}.sql.gz"
+  S3_URI=s3://$S3_BUCKET/$S3_PREFIX/$S3_FILE
+  echo "Uploading ${S3_FILE} on S3..."
+  cat $DUMP_FILE | aws $AWS_ARGS s3 cp - $S3_URI
+  if [ $? != 0 ]; then
+    >&2 echo "Error uploading ${S3_FILE} on S3"
+  fi
+  rm $DUMP_FILE
+done
 echo "MySQL backup finished"

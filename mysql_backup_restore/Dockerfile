@@ -24,10 +24,10 @@ ENV S3_PREFIX 'backup'
 ENV CRON_PATTERN '* * * * *'
 ENV TIMEZONE 'Asia/Ho_Chi_Minh'
 
-ADD backup.sh /root/backup.sh
-ADD restore.sh /root/restore.sh
+ADD backup.sh /bin/backup.sh
+ADD restore.sh /bin/restore.sh
 ADD docker-entrypoint.sh /bin/docker-entrypoint.sh
 
-ENTRYPOINT ["/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["backup"]
+CMD ["cron"]
